@@ -1,0 +1,32 @@
+{
+  "generator-jhipster": {
+    "applicationType": "monolith",
+    "authenticationType": "jwt",
+    "baseName": "senegalEmploi",
+    "buildTool": "maven",
+    "cacheProvider": "caffeine",
+    "clientFramework": "angular",
+    "clientTestFrameworks": [],
+    "clientTheme": "none",
+    "creationTimestamp": 1754089935140,
+    "databaseType": "sql",
+    "devDatabaseType": "mysql",
+    "enableHibernateCache": false,
+    "enableTranslation": false,
+    "entities": [],
+    "feignClient": null,
+    "jhipsterVersion": "8.11.0",
+    "jwtSecretKey": "NGRkMTgxZTZlNmE2N2M2YmE1NzkxNDgwOGE0MWMxMTM3ODBhMWEwYmJjMmZmODE4MDAyOWVmNmQzOTY1M2VlYjNkMzRmMDMyZjdiMjdhN2Q3M2Y0NzJmZjBmYWVjOGU4YjMxZjEyZThlNmRlNmEyNDVjMmY4MjNlNzBjM2JkNmI=",
+    "microfrontend": null,
+    "microfrontends": [],
+    "nativeLanguage": "fr",
+    "packageName": "sat.gdil.emploi",
+    "prodDatabaseType": "mysql",
+    "reactive": false,
+    "serverPort": null,
+    "serviceDiscoveryType": null,
+    "syncUserWithIdp": null,
+    "testFrameworks": [],
+    "withAdminUi": true
+  }
+}
