@@ -161,6 +161,80 @@
             }
           </div>
 
+          <div class="mb-3">
+            <label class="form-label" for="type">Type de compte</label>
+            <select class="form-select" id="type" name="type" formControlName="type">
+              <option value="" disabled selected>Choisissez le type d'utilisateur</option>
+              <option value="CANDIDAT">Candidat</option>
+              <option value="RECRUTEUR">Recruteur</option>
+            </select>
+          </div>
+          @let typeRef = registerForm.get('type')!;
+          @if (typeRef.value === 'CANDIDAT') {
+            <div class="mb-3">
+              <label class="form-label" for="telephone">Téléphone</label>
+              <input
+                type="text"
+                class="form-control"
+                id="telephone"
+                name="telephone"
+                placeholder="Numéro de téléphone"
+                formControlName="telephone"
+              />
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label" for="adresse">Adresse</label>
+              <input
+                type="text"
+                class="form-control"
+                id="adresse"
+                name="adresse"
+                placeholder="Adresse complète"
+                formControlName="adresse"
+              />
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label" for="sexe">Sexe</label>
+              <select class="form-select" id="sexe" name="sexe" formControlName="sexe">
+                <option value="" disabled selected>Choisissez le sexe</option>
+                <option value="Masculin">Masculin</option>
+                <option value="Feminin">Féminin</option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label" for="photo">Lien vers la photo</label>
+              <input type="text" class="form-control" id="photo" name="photo" placeholder="URL de votre photo" formControlName="photo" />
+            </div>
+
+          } @else if (typeRef.value === 'RECRUTEUR') {
+            <div class="mb-3">
+              <label class="form-label" for="entreprise">Nom de l’entreprise</label>
+              <input
+                type="text"
+                class="form-control"
+                id="entreprise"
+                name="entreprise"
+                placeholder="Ex: SONATEL"
+                formControlName="entreprise"
+              />
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label" for="secteur">Secteur d’activité</label>
+              <input
+                type="text"
+                class="form-control"
+                id="secteur"
+                name="secteur"
+                placeholder="Ex: Télécommunications"
+                formControlName="secteur"
+              />
+            </div>
+          }
+
           <button type="submit" [disabled]="registerForm.invalid" class="btn btn-primary" data-cy="submit">Enregistrement</button>
         </form>
       }

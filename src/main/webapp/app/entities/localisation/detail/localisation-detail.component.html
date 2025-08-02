@@ -1,0 +1,38 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (localisation(); as localisationRef) {
+      <div>
+        <h2 data-cy="localisationDetailsHeading"><span>Localisation</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span>ID</span></dt>
+          <dd>
+            <span>{{ localisationRef.id }}</span>
+          </dd>
+          <dt><span>Region</span></dt>
+          <dd>
+            <span>{{ localisationRef.region }}</span>
+          </dd>
+          <dt><span>Departement</span></dt>
+          <dd>
+            <span>{{ localisationRef.departement }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Retour</span>
+        </button>
+
+        <button type="button" [routerLink]="['/localisation', localisationRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Editer</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

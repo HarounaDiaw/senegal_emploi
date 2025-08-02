@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <!-- Entity Candidat liée à jhi_user par @MapsId -->
+    <changeSet id="20250801235023-1" author="jhipster">
+        <createTable tableName="candidat">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="cv" type="varchar(255)"/>
+            <column name="telephone" type="varchar(255)"/>
+            <column name="adresse" type="varchar(255)"/>
+            <column name="sexe" type="varchar(255)"/>
+            <column name="photo" type="varchar(255)"/>
+        </createTable>
+
+        <addForeignKeyConstraint
+            constraintName="fk_candidat_user"
+            baseTableName="candidat"
+            baseColumnNames="id"
+            referencedTableName="jhi_user"
+            referencedColumnNames="id"/>
+    </changeSet>
+
+</databaseChangeLog>

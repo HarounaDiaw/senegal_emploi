@@ -1,5 +1,6 @@
 package sat.gdil.emploi.web.rest;
 
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import java.util.*;
 import org.apache.commons.lang3.StringUtils;
@@ -7,7 +8,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import sat.gdil.emploi.domain.Candidat;
+import sat.gdil.emploi.domain.Recruteur;
 import sat.gdil.emploi.domain.User;
+import sat.gdil.emploi.repository.CandidatRepository;
+import sat.gdil.emploi.repository.RecruteurRepository;
 import sat.gdil.emploi.repository.UserRepository;
 import sat.gdil.emploi.security.SecurityUtils;
 import sat.gdil.emploi.service.MailService;
@@ -39,11 +44,21 @@ public class AccountResource {
     private final UserService userService;
 
     private final MailService mailService;
+    private final CandidatRepository candidatRepository;
+    private final RecruteurRepository recruteurRepository;
 
-    public AccountResource(UserRepository userRepository, UserService userService, MailService mailService) {
+    public AccountResource(
+        UserRepository userRepository,
+        UserService userService,
+        MailService mailService,
+        CandidatRepository candidatRepository,
+        RecruteurRepository recruteurRepository
+    ) {
         this.userRepository = userRepository;
         this.userService = userService;
         this.mailService = mailService;
+        this.candidatRepository = candidatRepository;
+        this.recruteurRepository = recruteurRepository;
     }
 
     /**
@@ -56,11 +71,51 @@ public class AccountResource {
      */
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
+    @Transactional
     public void registerAccount(@Valid @RequestBody ManagedUserVM managedUserVM) {
         if (isPasswordLengthInvalid(managedUserVM.getPassword())) {
             throw new InvalidPasswordException();
         }
+
+        // Vérification des conflits (login ou email déjà utilisé)
+        userRepository
+            .findOneByLogin(managedUserVM.getLogin().toLowerCase())
+            .ifPresent(existingUser -> {
+                throw new LoginAlreadyUsedException();
+            });
+
+        userRepository
+            .findOneByEmailIgnoreCase(managedUserVM.getEmail())
+            .ifPresent(existingUser -> {
+                throw new EmailAlreadyUsedException();
+            });
+
+        // Création de l'utilisateur
         User user = userService.registerUser(managedUserVM, managedUserVM.getPassword());
+
+        // ⚠️ Forcer Hibernate à flush immédiatement l'utilisateur pour éviter l'erreur 409
+        userRepository.flush();
+
+        // Création du Candidat lié (avec @MapsId)
+        if ("CANDIDAT".equalsIgnoreCase(managedUserVM.getType())) {
+            Candidat candidat = new Candidat();
+            candidat.setUser(user);
+            candidat.setTelephone(managedUserVM.getTelephone());
+            candidat.setAdresse(managedUserVM.getAdresse());
+            candidat.setSexe(managedUserVM.getSexe());
+            candidat.setPhoto(managedUserVM.getPhoto());
+            candidatRepository.save(candidat);
+        } else if ("RECRUTEUR".equalsIgnoreCase(managedUserVM.getType())) {
+            Recruteur recruteur = new Recruteur();
+            recruteur.setUser(user);
+            recruteur.setEntreprise(managedUserVM.getEntreprise()); // ajoute ce champ dans VM si besoin
+            recruteur.setSecteur(managedUserVM.getSecteur());
+            recruteurRepository.save(recruteur);
+        } else {
+            throw new BadRequestAlertException("Type d'utilisateur inconnu", "user", "invalidtype");
+        }
+
+        // Envoi de l’email d’activation
         mailService.sendActivationEmail(user);
     }
 

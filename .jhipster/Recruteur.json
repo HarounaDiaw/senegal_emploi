@@ -1,0 +1,21 @@
+{
+  "annotations": {
+    "changelogDate": "20250801235024"
+  },
+  "applications": "*",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "entreprise",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "secteur",
+      "fieldType": "String"
+    }
+  ],
+  "name": "Recruteur",
+  "relationships": [],
+  "searchEngine": "no",
+  "service": "serviceImpl"
+}

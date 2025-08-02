@@ -44,6 +44,19 @@ export default class RegisterComponent implements AfterViewInit {
       nonNullable: true,
       validators: [Validators.required, Validators.minLength(4), Validators.maxLength(50)],
     }),
+
+    // Ajout du type d'utilisateur
+    type: new FormControl<'CANDIDAT' | 'RECRUTEUR'>('CANDIDAT', { nonNullable: true }),
+
+    // Champs communs au candidat
+    telephone: new FormControl('', { nonNullable: true }),
+    adresse: new FormControl('', { nonNullable: true }),
+    sexe: new FormControl<'Masculin' | 'Féminin'>('Masculin', { nonNullable: true }),
+    photo: new FormControl('', { nonNullable: true }),
+
+    // Champs spécifiques au recruteur
+    entreprise: new FormControl(''),
+    secteur: new FormControl(''),
   });
 
   private readonly registerService = inject(RegisterService);

@@ -1,0 +1,23 @@
+{
+  "annotations": {
+    "changelogDate": "20250801235027"
+  },
+  "applications": "*",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "region",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "departement",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "name": "Localisation",
+  "relationships": [],
+  "searchEngine": "no",
+  "service": "serviceImpl"
+}
