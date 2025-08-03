@@ -95,7 +95,7 @@ public class AccountResource {
 
         // ⚠️ Forcer Hibernate à flush immédiatement l'utilisateur pour éviter l'erreur 409
         userRepository.flush();
-
+        Set<String> authorities = new HashSet<>();
         // Création du Candidat lié (avec @MapsId)
         if ("CANDIDAT".equalsIgnoreCase(managedUserVM.getType())) {
             Candidat candidat = new Candidat();
@@ -104,16 +104,21 @@ public class AccountResource {
             candidat.setAdresse(managedUserVM.getAdresse());
             candidat.setSexe(managedUserVM.getSexe());
             candidat.setPhoto(managedUserVM.getPhoto());
+            authorities.add("ROLE_CANDIDAT");
+
             candidatRepository.save(candidat);
         } else if ("RECRUTEUR".equalsIgnoreCase(managedUserVM.getType())) {
             Recruteur recruteur = new Recruteur();
             recruteur.setUser(user);
             recruteur.setEntreprise(managedUserVM.getEntreprise()); // ajoute ce champ dans VM si besoin
             recruteur.setSecteur(managedUserVM.getSecteur());
+            authorities.add("ROLE_RECRUTEUR");
+
             recruteurRepository.save(recruteur);
         } else {
             throw new BadRequestAlertException("Type d'utilisateur inconnu", "user", "invalidtype");
         }
+        managedUserVM.setAuthorities(authorities);
 
         // Envoi de l’email d’activation
         mailService.sendActivationEmail(user);

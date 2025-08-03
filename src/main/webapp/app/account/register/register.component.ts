@@ -71,15 +71,36 @@ export default class RegisterComponent implements AfterViewInit {
     this.errorEmailExists.set(false);
     this.errorUserExists.set(false);
 
-    const { password, confirmPassword } = this.registerForm.getRawValue();
-    if (password !== confirmPassword) {
+    // Récupération des valeurs du formulaire
+    const formValues = this.registerForm.getRawValue();
+
+    if (formValues.password !== formValues.confirmPassword) {
       this.doNotMatch.set(true);
-    } else {
-      const { login, email } = this.registerForm.getRawValue();
-      this.registerService
-        .save({ login, email, password, langKey: 'fr' })
-        .subscribe({ next: () => this.success.set(true), error: response => this.processError(response) });
+      return;
     }
+
+    // Construction dynamique du payload
+    const Info: any = {
+      login: formValues.login,
+      email: formValues.email,
+      password: formValues.password,
+      langKey: 'fr',
+      type: formValues.type,
+      telephone: formValues.telephone,
+      adresse: formValues.adresse,
+      sexe: formValues.sexe,
+      photo: formValues.photo,
+    };
+
+    if (formValues.type === 'RECRUTEUR') {
+      Info.entreprise = formValues.entreprise ?? '';
+      Info.secteur = formValues.secteur ?? '';
+    }
+
+    this.registerService.save(Info).subscribe({
+      next: () => this.success.set(true),
+      error: response => this.processError(response),
+    });
   }
 
   private processError(response: HttpErrorResponse): void {
