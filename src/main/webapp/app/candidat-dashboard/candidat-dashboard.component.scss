@@ -1,0 +1,106 @@
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa;
+}
+
+img {
+  object-fit: cover;
+  border: 2px solid #dee2e6;
+}
+
+.form-label {
+  font-weight: 600;
+  color: #495057;
+}
+
+input[type='file'] {
+  cursor: pointer;
+}
+
+.card {
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  border-radius: 0.5rem;
+
+  .card-header {
+    font-weight: 600;
+    font-size: 1.1rem;
+  }
+}
+
+.btn-warning {
+  font-weight: bold;
+}
+
+.btn-outline-primary {
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    background-color: #0d6efd;
+    color: white;
+  }
+}
+
+input.form-control,
+select.form-select {
+  border-radius: 0.375rem;
+  border: 1px solid #ced4da;
+}
+
+input.form-control:focus,
+select.form-select:focus {
+  border-color: #80bdff;
+  outline: none;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.offres {
+  .offre-item {
+    transition: background-color 0.2s;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #e9ecef;
+    }
+
+    h5 {
+      color: #0d6efd;
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      color: #495057;
+      margin-bottom: 0.5rem;
+    }
+
+    button {
+      font-weight: 500;
+    }
+  }
+}
+
+.text-muted {
+  color: #6c757d !important;
+}
+
+@media (max-width: 768px) {
+  .d-flex {
+    flex-direction: column;
+    align-items: flex-start;
+
+    img {
+      margin-bottom: 1rem;
+    }
+
+    .form-label {
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  .row > div {
+    margin-bottom: 1rem;
+  }
+}
