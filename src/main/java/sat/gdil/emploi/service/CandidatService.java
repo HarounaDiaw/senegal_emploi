@@ -53,4 +53,6 @@ public interface CandidatService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+    CandidatDTO getCurrentCandidatDTO();
+    CandidatDTO updateCurrentCandidat(CandidatDTO dto);
 }

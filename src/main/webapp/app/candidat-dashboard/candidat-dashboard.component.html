@@ -1,0 +1,95 @@
+<div class="container mt-4">
+  <!-- 🧱 1. PHOTO DE PROFIL -->
+  <div class="d-flex align-items-center mb-4">
+    <div class="me-4">
+      <img *ngIf="photoUrl" [src]="photoUrl" alt="Photo de profil" class="rounded-circle border" width="120" height="120" />
+      <div *ngIf="!photoUrl" class="text-muted">Aucune photo</div>
+    </div>
+    <div>
+      <label class="form-label">Changer de photo</label>
+      <input type="file" (change)="onPhotoSelected($event)" class="form-control" />
+    </div>
+  </div>
+
+  <!-- 🧱 2. BARRE DE RECHERCHE -->
+  <div class="input-group mb-4">
+    <input type="text" class="form-control" placeholder="Rechercher une offre..." [(ngModel)]="searchQuery" />
+    <button class="btn btn-outline-primary" (click)="filtrerOffres()">Rechercher</button>
+  </div>
+
+  <!-- 🧱 3. MODIFIER PROFIL (avec affichage conditionnel) -->
+  <div class="mb-4">
+    <button class="btn btn-warning" (click)="toggleProfilForm()">
+      {{ isEditingProfil ? 'Fermer' : 'Modifier mon profil' }}
+    </button>
+  </div>
+
+  <div *ngIf="isEditingProfil" class="card mb-4">
+    <div class="card-header bg-primary text-white">Modifier mon profil</div>
+    <div class="card-body">
+      <form [formGroup]="profilForm" (ngSubmit)="saveProfil()">
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label>Nom</label>
+            <input type="text" formControlName="nom" class="form-control" />
+          </div>
+          <div class="col-md-6">
+            <label>Prénom</label>
+            <input type="text" formControlName="prenom" class="form-control" />
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label>Email</label>
+            <input type="email" formControlName="email" class="form-control" />
+          </div>
+          <div class="col-md-6">
+            <label>Téléphone</label>
+            <input type="text" formControlName="telephone" class="form-control" />
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label>Adresse</label>
+            <input type="text" formControlName="adresse" class="form-control" />
+          </div>
+          <div class="col-md-6">
+            <label>Sexe</label>
+            <select formControlName="sexe" class="form-select">
+              <option value="Masculin">Masculin</option>
+              <option value="Feminin">Féminin</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label>Changer la photo</label>
+          <input type="file" accept="image/*" (change)="onPhotoSelected($event)" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+          <label>Ajouter un CV (PDF)</label>
+          <input type="file" accept=".pdf" (change)="onCvSelected($event)" class="form-control" />
+        </div>
+
+        <button type="submit" class="btn btn-success">Enregistrer les modifications</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 🧱 4. LISTE DES OFFRES -->
+  <div class="card">
+    <div class="card-header bg-secondary text-white">Offres disponibles</div>
+    <div class="card-body">
+      <div *ngIf="offres.length === 0" class="text-muted">Aucune offre trouvée.</div>
+
+      <div *ngFor="let offre of offres" class="border rounded p-3 mb-3">
+        <h5>{{ offre.titre }}</h5>
+        <p>{{ offre.description }}</p>
+        <button class="btn btn-outline-primary" (click)="postuler(offre.id)">Postuler</button>
+      </div>
+    </div>
+  </div>
+</div>

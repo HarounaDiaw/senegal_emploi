@@ -39,6 +39,22 @@ public class Candidat implements Serializable {
     @JoinColumn(name = "id")
     private User user;
 
+    public String getNom() {
+        return user != null ? user.getLastName() : null;
+    }
+
+    public String getPrenom() {
+        return user != null ? user.getFirstName() : null;
+    }
+
+    public void setNom(String nom) {
+        if (user != null) user.setLastName(nom);
+    }
+
+    public void setPrenom(String prenom) {
+        if (user != null) user.setFirstName(prenom);
+    }
+
     public User getUser() {
         return user;
     }

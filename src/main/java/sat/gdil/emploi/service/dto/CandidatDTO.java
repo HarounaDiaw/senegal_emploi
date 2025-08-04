@@ -2,6 +2,7 @@ package sat.gdil.emploi.service.dto;
 
 import java.io.Serializable;
 import java.util.Objects;
+import sat.gdil.emploi.domain.Candidat;
 import sat.gdil.emploi.domain.enumeration.Sexe;
 
 /**
@@ -17,10 +18,29 @@ public class CandidatDTO implements Serializable {
     private String telephone;
 
     private String adresse;
+    private String nom;
+    private String prenom;
+    private String email;
 
     private Sexe sexe;
 
     private String photo;
+
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
+    public void setPrenom(String prenom) {
+        this.prenom = prenom;
+    }
+
+    public String getNom() {
+        return nom;
+    }
+
+    public String getPrenom() {
+        return prenom;
+    }
 
     public Long getId() {
         return id;
@@ -96,11 +116,21 @@ public class CandidatDTO implements Serializable {
     public String toString() {
         return "CandidatDTO{" +
             "id=" + getId() +
+            ", nom='" + getNom() + "'" +
+            ", prenom='" + getPrenom() + "'" +
             ", cv='" + getCv() + "'" +
             ", telephone='" + getTelephone() + "'" +
             ", adresse='" + getAdresse() + "'" +
             ", sexe='" + getSexe() + "'" +
             ", photo='" + getPhoto() + "'" +
             "}";
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

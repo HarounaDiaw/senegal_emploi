@@ -10,7 +10,23 @@ import { ICandidat, NewCandidat } from '../candidat.model';
 export type PartialUpdateCandidat = Partial<ICandidat> & Pick<ICandidat, 'id'>;
 
 export type EntityResponseType = HttpResponse<ICandidat>;
+export type Sexe = 'Masculin' | 'Feminin' | null;
 export type EntityArrayResponseType = HttpResponse<ICandidat[]>;
+export interface Candidat {
+  id: number;
+  telephone?: string;
+  adresse?: string;
+  sexe?: string;
+  photo?: string;
+  cv?: string;
+  user: {
+    login: string;
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    imageUrl?: string;
+  };
+}
 
 @Injectable({ providedIn: 'root' })
 export class CandidatService {
@@ -47,6 +63,10 @@ export class CandidatService {
   getCandidatIdentifier(candidat: Pick<ICandidat, 'id'>): number {
     return candidat.id;
   }
+  //Current Candidat
+  getCurrent(): Observable<Candidat> {
+    return this.http.get<Candidat>(`${this.resourceUrl}/current`);
+  }
 
   compareCandidat(o1: Pick<ICandidat, 'id'> | null, o2: Pick<ICandidat, 'id'> | null): boolean {
     return o1 && o2 ? this.getCandidatIdentifier(o1) === this.getCandidatIdentifier(o2) : o1 === o2;
@@ -70,5 +90,9 @@ export class CandidatService {
       return [...candidatsToAdd, ...candidatCollection];
     }
     return candidatCollection;
+  }
+
+  updateCurrent(data: Partial<ICandidat>): Observable<EntityResponseType> {
+    return this.http.put<ICandidat>(`${this.resourceUrl}/current`, data, { observe: 'response' });
   }
 }

@@ -4,6 +4,7 @@ import { Authority } from 'app/config/authority.constants';
 
 import { UserRouteAccessService } from 'app/core/auth/user-route-access.service';
 import { errorRoute } from './layouts/error/error.route';
+import { CandidatDashboardComponent } from './candidat-dashboard/candidat-dashboard.component';
 
 const routes: Routes = [
   {
@@ -36,6 +37,16 @@ const routes: Routes = [
   {
     path: '',
     loadChildren: () => import(`./entities/entity.routes`),
+  },
+
+  {
+    path: 'candidat-dashboard',
+    component: CandidatDashboardComponent,
+    data: {
+      authorities: ['ROLE_CANDIDAT'],
+      pageTitle: 'Tableau de bord Candidat',
+    },
+    canActivate: [UserRouteAccessService],
   },
   ...errorRoute,
 ];

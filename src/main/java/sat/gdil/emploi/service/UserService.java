@@ -110,10 +110,10 @@ public class UserService {
                     throw new EmailAlreadyUsedException();
                 }
             });
+
         User newUser = new User();
         String encryptedPassword = passwordEncoder.encode(password);
         newUser.setLogin(userDTO.getLogin().toLowerCase());
-        // new user gets initially a generated password
         newUser.setPassword(encryptedPassword);
         newUser.setFirstName(userDTO.getFirstName());
         newUser.setLastName(userDTO.getLastName());
@@ -122,13 +122,21 @@ public class UserService {
         }
         newUser.setImageUrl(userDTO.getImageUrl());
         newUser.setLangKey(userDTO.getLangKey());
-        // new user is not active
         newUser.setActivated(true);
-        // new user gets registration key
         newUser.setActivationKey(RandomUtil.generateActivationKey());
+
+        // ✅ Attribution du rôle selon le type
         Set<Authority> authorities = new HashSet<>();
-        authorityRepository.findById(AuthoritiesConstants.USER).ifPresent(authorities::add);
+        if ("CANDIDAT".equalsIgnoreCase(userDTO.getType())) {
+            authorityRepository.findById(AuthoritiesConstants.CANDIDAT).ifPresent(authorities::add);
+        } else if ("RECRUTEUR".equalsIgnoreCase(userDTO.getType())) {
+            authorityRepository.findById(AuthoritiesConstants.RECRUTEUR).ifPresent(authorities::add);
+        } else {
+            // fallback par défaut
+            authorityRepository.findById(AuthoritiesConstants.USER).ifPresent(authorities::add);
+        }
         newUser.setAuthorities(authorities);
+
         userRepository.save(newUser);
         this.clearUserCaches(newUser);
         LOG.debug("Created Information for User: {}", newUser);

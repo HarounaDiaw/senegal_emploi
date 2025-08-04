@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sat.gdil.emploi.domain.Candidat;
 import sat.gdil.emploi.repository.CandidatRepository;
+import sat.gdil.emploi.security.SecurityUtils;
 import sat.gdil.emploi.service.CandidatService;
 import sat.gdil.emploi.service.dto.CandidatDTO;
 import sat.gdil.emploi.service.mapper.CandidatMapper;
@@ -81,5 +82,45 @@ public class CandidatServiceImpl implements CandidatService {
     public void delete(Long id) {
         LOG.debug("Request to delete Candidat : {}", id);
         candidatRepository.deleteById(id);
+    }
+
+    public CandidatDTO getCurrentCandidatDTO() {
+        String login = SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new RuntimeException("Utilisateur non connecté"));
+
+        Candidat candidat = candidatRepository
+            .findOneWithEagerRelationshipsByLogin(login)
+            .orElseThrow(() -> new RuntimeException("Candidat non trouvé"));
+
+        // Création manuelle du DTO
+        CandidatDTO dto = candidatMapper.toDto(candidat);
+        dto.setNom(candidat.getUser().getLastName()); // ⚠️ attention : getUser()
+        dto.setPrenom(candidat.getUser().getFirstName()); // idem
+
+        return dto;
+    }
+
+    public CandidatDTO updateCurrentCandidat(CandidatDTO dto) {
+        String login = SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new RuntimeException("Utilisateur non connecté"));
+
+        Candidat candidat = candidatRepository
+            .findOneWithEagerRelationshipsByLogin(login)
+            .orElseThrow(() -> new RuntimeException("Candidat non trouvé"));
+
+        // Mise à jour des champs simples du candidat
+        candidat.setAdresse(dto.getAdresse());
+        candidat.setTelephone(dto.getTelephone());
+        candidat.setSexe(dto.getSexe());
+        candidat.setCv(dto.getCv());
+        candidat.setPhoto(dto.getPhoto());
+
+        // Mise à jour des champs liés à User
+        if (candidat.getUser() != null) {
+            candidat.getUser().setFirstName(dto.getPrenom());
+            candidat.getUser().setLastName(dto.getNom());
+            candidat.getUser().setEmail(dto.getEmail()); // Optionnel
+        }
+
+        candidat = candidatRepository.save(candidat);
+        return getCurrentCandidatDTO(); // renvoyer l'état à jour
     }
 }

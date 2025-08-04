@@ -5,7 +5,7 @@ import { Router, RouterModule } from '@angular/router';
 import SharedModule from 'app/shared/shared.module';
 import { LoginService } from 'app/login/login.service';
 import { AccountService } from 'app/core/auth/account.service';
-
+import { Account } from 'app/core/auth/account.model';
 @Component({
   selector: 'jhi-login',
   imports: [SharedModule, FormsModule, ReactiveFormsModule, RouterModule],
@@ -41,11 +41,17 @@ export default class LoginComponent implements OnInit, AfterViewInit {
 
   login(): void {
     this.loginService.login(this.loginForm.getRawValue()).subscribe({
-      next: () => {
-        this.authenticationError.set(false);
-        if (!this.router.getCurrentNavigation()) {
-          // There were no routing during login (eg from navigationToStoredUrl)
-          this.router.navigate(['']);
+      next: account => {
+        if (account) {
+          const roles = account.authorities || [];
+
+          if (roles.includes('ROLE_CANDIDAT')) {
+            this.router.navigate(['/candidat-dashboard']);
+          } else if (roles.includes('ROLE_RECRUTEUR')) {
+            this.router.navigate(['/recruteur-dashboard']);
+          } else {
+            this.router.navigate(['/']); // fallback
+          }
         }
       },
       error: () => this.authenticationError.set(true),

@@ -10,9 +10,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import sat.gdil.emploi.domain.Candidat;
 import sat.gdil.emploi.repository.CandidatRepository;
+import sat.gdil.emploi.security.SecurityUtils;
 import sat.gdil.emploi.service.CandidatService;
 import sat.gdil.emploi.service.dto.CandidatDTO;
+import sat.gdil.emploi.service.mapper.CandidatMapper;
 import sat.gdil.emploi.web.rest.errors.BadRequestAlertException;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
@@ -34,10 +37,12 @@ public class CandidatResource {
     private final CandidatService candidatService;
 
     private final CandidatRepository candidatRepository;
+    private final CandidatMapper candidatMapper;
 
-    public CandidatResource(CandidatService candidatService, CandidatRepository candidatRepository) {
+    public CandidatResource(CandidatService candidatService, CandidatRepository candidatRepository, CandidatMapper candidatMapper) {
         this.candidatService = candidatService;
         this.candidatRepository = candidatRepository;
+        this.candidatMapper = candidatMapper;
     }
 
     /**
@@ -165,5 +170,16 @@ public class CandidatResource {
         return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    @GetMapping("/current")
+    public ResponseEntity<CandidatDTO> getCurrentCandidat() {
+        return ResponseEntity.ok(candidatService.getCurrentCandidatDTO());
+    }
+
+    @PutMapping("/current")
+    public ResponseEntity<CandidatDTO> updateCurrentCandidat(@RequestBody CandidatDTO dto) {
+        CandidatDTO updated = candidatService.updateCurrentCandidat(dto);
+        return ResponseEntity.ok(updated);
     }
 }

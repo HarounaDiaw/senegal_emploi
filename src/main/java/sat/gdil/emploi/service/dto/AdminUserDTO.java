@@ -50,6 +50,15 @@ public class AdminUserDTO implements Serializable {
     private Instant lastModifiedDate;
 
     private Set<String> authorities;
+    private String type;
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getType() {
+        return type;
+    }
 
     public AdminUserDTO() {
         // Empty constructor needed for Jackson.
