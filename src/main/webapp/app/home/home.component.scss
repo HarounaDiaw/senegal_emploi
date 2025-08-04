@@ -1,23 +1,156 @@
-/* ==========================================================================
-Main page styles
-========================================================================== */
+/* Variables */
+$se-primary: #2e86ab; // Bleu professionnel
+$se-secondary: #f18f01; // Orange accent
+$se-dark: #333333;
+$se-light: #f8f9fa;
 
-.hipster {
-  display: inline-block;
-  width: 347px;
-  height: 497px;
-  background: url('../../content/images/jhipster_family_member_3.svg') no-repeat center top;
-  background-size: contain;
+.se-container {
+  font-family: 'Roboto', sans-serif;
+  min-height: 100vh;
+  padding: 0;
+  margin: 0;
 }
 
-/* wait autoprefixer update to allow simple generation of high pixel density media query */
-@media only screen and (-webkit-min-device-pixel-ratio: 2),
-  only screen and (-moz-min-device-pixel-ratio: 2),
-  only screen and (-o-min-device-pixel-ratio: 2/1),
-  only screen and (min-resolution: 192dpi),
-  only screen and (min-resolution: 2dppx) {
-  .hipster {
-    background: url('../../content/images/jhipster_family_member_3.svg') no-repeat center top;
-    background-size: contain;
+/* En-tête */
+.se-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 5%;
+  background: $se-light;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+  &-logo {
+    height: 60px;
+    width: auto;
+  }
+
+  .se-auth-actions {
+    display: flex;
+    gap: 1rem;
+
+    .se-btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &-login {
+        background: $se-primary;
+        color: white;
+        border: none;
+
+        &:hover {
+          background: darken($se-primary, 10%);
+        }
+      }
+
+      &-register {
+        background: white;
+        color: $se-primary;
+        border: 2px solid $se-primary;
+
+        &:hover {
+          background: rgba($se-primary, 0.05);
+        }
+      }
+    }
+  }
+}
+
+/* Bannière Hero */
+.se-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4rem 5%;
+  background: linear-gradient(135deg, $se-light 0%, white 100%);
+
+  &-content {
+    flex: 1;
+    max-width: 600px;
+
+    .se-hero-title {
+      font-size: 2.5rem;
+      color: $se-dark;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+
+    .se-hero-subtitle {
+      font-size: 1.25rem;
+      color: lighten($se-dark, 20%);
+      margin-bottom: 2rem;
+    }
+  }
+
+  &-image {
+    flex: 1;
+    max-width: 50%;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .se-btn-primary {
+    background: $se-secondary;
+    color: white;
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    border: none;
+
+    &:hover {
+      background: darken($se-secondary, 10%);
+    }
+  }
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .se-hero {
+    flex-direction: column;
+    text-align: center;
+
+    &-image {
+      max-width: 100%;
+      margin-top: 2rem;
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .se-header {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+
+    .se-auth-actions {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  .se-hero-title {
+    font-size: 2rem !important;
+  }
+}
+.se-logo-container {
+  // Conteneur du logo
+  display: flex;
+  align-items: center;
+
+  .se-logo {
+    max-height: 50px; // Taille réduite (ajustez selon vos besoins)
+    width: auto; // Maintient les proportions
+    transition: transform 0.3s ease; // Animation optionnelle
+
+    &:hover {
+      transform: scale(1.2); // Effet de zoom léger au survol
+    }
+
+    @media (max-width: 768px) {
+      max-height: 70px; // Taille encore plus réduite sur mobile
+    }
   }
 }

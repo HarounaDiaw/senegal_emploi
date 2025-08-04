@@ -1,35 +1,41 @@
-import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-
-import SharedModule from 'app/shared/shared.module';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { AccountService } from 'app/core/auth/account.service';
-import { Account } from 'app/core/auth/account.model';
+import { Subject, takeUntil } from 'rxjs';
+import SharedModule from 'app/shared/shared.module';
+import { MainComponent } from '../layouts/main/main.component';
+import { FooterComponent } from '../layouts/footer/footer.component';
 
 @Component({
   selector: 'jhi-home',
+  standalone: true,
+  imports: [SharedModule, MainComponent, FooterComponent],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.scss',
-  imports: [SharedModule, RouterModule],
+  styleUrls: ['./home.component.scss'],
 })
 export default class HomeComponent implements OnInit, OnDestroy {
-  account = signal<Account | null>(null);
-
-  private readonly destroy$ = new Subject<void>();
-
-  private readonly accountService = inject(AccountService);
-  private readonly router = inject(Router);
+  private destroy$ = new Subject<void>();
+  private accountService = inject(AccountService);
+  private router = inject(Router);
 
   ngOnInit(): void {
-    this.accountService
-      .getAuthenticationState()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(account => this.account.set(account));
+    this.accountService.getAuthenticationState().pipe(takeUntil(this.destroy$)).subscribe();
   }
 
   login(): void {
     this.router.navigate(['/login']);
+  }
+
+  navigateToRegister(): void {
+    this.router.navigate(['/account/register'], {
+      // Options de navigation supplémentaires si nécessaire
+      skipLocationChange: false, // Garde l'URL synchronisée
+      state: { fromHome: true }, // Exemple de données supplémentaires
+    });
+  }
+
+  navigateToOffreEmploi(): void {
+    this.router.navigate(['/offre-emploi']); // Chemin exact selon votre configuration
   }
 
   ngOnDestroy(): void {

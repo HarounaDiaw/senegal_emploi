@@ -11,7 +11,7 @@ import { ProfileService } from './profile.service';
   template: `
     @if (ribbonEnvSignal; as ribbonEnv) {
       <div class="ribbon">
-        <a href="">{{ { dev: 'Développement' }[ribbonEnv() ?? ''] }}</a>
+        <a href="">{{ { dev: 'Senegal Emploi' }[ribbonEnv() ?? ''] }}</a>
       </div>
     }
   `,

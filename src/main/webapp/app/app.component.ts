@@ -8,7 +8,7 @@ import locale from '@angular/common/locales/fr';
 
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { fontAwesomeIcons } from './config/font-awesome-icons';
-import MainComponent from './layouts/main/main.component';
+import { MainComponent } from './layouts/main/main.component';
 
 @Component({
   selector: 'jhi-app',

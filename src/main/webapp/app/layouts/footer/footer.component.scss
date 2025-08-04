@@ -1,0 +1,159 @@
+/* Variables */
+$se-primary: #2e86ab;
+$se-secondary: #f18f01;
+$se-dark: #333333;
+$se-light: #f8f9fa;
+
+.se-footer {
+  background-color: $se-dark;
+  color: white;
+  padding: 3rem 0 0;
+  font-family: 'Roboto', sans-serif;
+  position: relative;
+  z-index: 10;
+
+  &-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  &-section {
+    margin-bottom: 2rem;
+
+    h3,
+    h4 {
+      color: $se-secondary;
+      margin-bottom: 1.5rem;
+    }
+  }
+
+  &-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  &-subtitle {
+    font-size: 1.2rem;
+    font-weight: 600;
+    border-bottom: 2px solid rgba($se-secondary, 0.3);
+    padding-bottom: 0.5rem;
+    display: inline-block;
+  }
+
+  &-links {
+    list-style: none;
+    padding: 0;
+
+    li {
+      margin-bottom: 0.8rem;
+    }
+
+    a {
+      color: rgba(white, 0.8);
+      text-decoration: none;
+      transition: color 0.3s;
+      display: inline-block;
+      padding: 0.2rem 0;
+
+      &:hover {
+        color: $se-secondary;
+        transform: translateX(5px);
+      }
+    }
+  }
+
+  &-contact {
+    font-style: normal;
+    color: rgba(white, 0.8);
+
+    p {
+      margin-bottom: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+  }
+
+  &-bottom {
+    background-color: darken($se-dark, 10%);
+    padding: 1.5rem 2rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+
+    @media (min-width: 768px) {
+      flex-direction: row;
+      justify-content: space-between;
+    }
+  }
+
+  /* Styles spécifiques pour les icônes Font Awesome */
+  &-social {
+    display: flex;
+    gap: 1rem;
+
+    a {
+      color: white;
+      background: rgba(white, 0.1);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      font-size: 1.1rem;
+
+      &:hover {
+        background: $se-secondary;
+        transform: translateY(-3px) scale(1.1);
+        color: $se-dark;
+      }
+
+      fa-icon {
+        transition: transform 0.3s ease;
+      }
+    }
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .se-footer {
+    padding: 2rem 0 0;
+
+    &-container {
+      grid-template-columns: 1fr;
+      text-align: center;
+      gap: 1.5rem;
+    }
+
+    &-section {
+      h3,
+      h4 {
+        justify-content: center;
+      }
+    }
+
+    &-links a {
+      justify-content: center;
+    }
+
+    &-contact p {
+      justify-content: center;
+    }
+  }
+}
+
+:host {
+  /* Cible le sélecteur jhi-footer */
+  display: block;
+  position: relative;
+  z-index: 10;
+}

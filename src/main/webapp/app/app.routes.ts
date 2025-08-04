@@ -1,7 +1,5 @@
 import { Routes } from '@angular/router';
-
 import { Authority } from 'app/config/authority.constants';
-
 import { UserRouteAccessService } from 'app/core/auth/user-route-access.service';
 import { errorRoute } from './layouts/error/error.route';
 import { CandidatDashboardComponent } from './candidat-dashboard/candidat-dashboard.component';
@@ -9,12 +7,12 @@ import { CandidatDashboardComponent } from './candidat-dashboard/candidat-dashbo
 const routes: Routes = [
   {
     path: '',
-    loadComponent: () => import('./home/home.component'),
+    loadComponent: () => import('./home/home.component').then(m => m.default), // Correction clé ici
     title: 'home.title',
   },
   {
     path: '',
-    loadComponent: () => import('./layouts/navbar/navbar.component'),
+    loadComponent: () => import('./layouts/navbar/navbar.component').then(m => m.default),
     outlet: 'navbar',
   },
   {
@@ -31,7 +29,7 @@ const routes: Routes = [
   },
   {
     path: 'login',
-    loadComponent: () => import('./login/login.component'),
+    loadComponent: () => import('./login/login.component').then(m => m.default),
     title: 'login.title',
   },
   {
