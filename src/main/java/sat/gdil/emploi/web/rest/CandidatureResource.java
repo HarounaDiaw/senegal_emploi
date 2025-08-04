@@ -2,6 +2,7 @@ package sat.gdil.emploi.web.rest;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -10,8 +11,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import sat.gdil.emploi.domain.Candidat;
+import sat.gdil.emploi.domain.Candidature;
+import sat.gdil.emploi.domain.OffreEmploi;
+import sat.gdil.emploi.domain.User;
+import sat.gdil.emploi.repository.CandidatRepository;
 import sat.gdil.emploi.repository.CandidatureRepository;
+import sat.gdil.emploi.repository.OffreEmploiRepository;
 import sat.gdil.emploi.service.CandidatureService;
+import sat.gdil.emploi.service.UserService;
 import sat.gdil.emploi.service.dto.CandidatureDTO;
 import sat.gdil.emploi.web.rest.errors.BadRequestAlertException;
 import tech.jhipster.web.util.HeaderUtil;
@@ -35,9 +43,22 @@ public class CandidatureResource {
 
     private final CandidatureRepository candidatureRepository;
 
-    public CandidatureResource(CandidatureService candidatureService, CandidatureRepository candidatureRepository) {
+    private final OffreEmploiRepository offreEmploiRepository;
+    private final CandidatRepository candidatRepository;
+    private final UserService userService;
+
+    public CandidatureResource(
+        CandidatureService candidatureService,
+        CandidatureRepository candidatureRepository,
+        OffreEmploiRepository offreEmploiRepository,
+        CandidatRepository candidatRepository,
+        UserService userService
+    ) {
         this.candidatureService = candidatureService;
         this.candidatureRepository = candidatureRepository;
+        this.offreEmploiRepository = offreEmploiRepository;
+        this.candidatRepository = candidatRepository;
+        this.userService = userService;
     }
 
     /**
@@ -165,5 +186,46 @@ public class CandidatureResource {
         return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    //postuler
+
+    @PostMapping("/postuler/{offreId}")
+    public ResponseEntity<Candidature> postuler(@PathVariable Long offreId) {
+        Optional<OffreEmploi> offreOpt = offreEmploiRepository.findById(offreId);
+        if (offreOpt.isEmpty()) return ResponseEntity.notFound().build();
+
+        Optional<User> user = userService.getUserWithAuthorities();
+        if (user.isEmpty()) return ResponseEntity.status(403).build();
+
+        Optional<Candidat> candidat = candidatRepository.findByUserId(user.get().getId());
+        if (candidat.isEmpty()) return ResponseEntity.status(403).build();
+
+        // Vérification : ne pas postuler 2 fois
+        if (candidatureRepository.existsByCandidatIdAndOffreId(candidat.get().getId(), offreId)) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        Candidature candidature = new Candidature();
+        candidature.setDateDepot(Instant.now());
+        candidature.setStatut("En attente");
+        candidature.setOffre(offreOpt.get());
+        candidature.setCandidat(candidat.get());
+
+        Candidature result = candidatureRepository.save(candidature);
+        return ResponseEntity.ok(result);
+    }
+
+    //afficher les candidatures
+    @GetMapping("/mes-candidatures")
+    public ResponseEntity<List<Candidature>> getMesCandidatures() {
+        Optional<User> user = userService.getUserWithAuthorities();
+        if (user.isEmpty()) return ResponseEntity.status(403).build();
+
+        Optional<Candidat> candidat = candidatRepository.findByUserId(user.get().getId());
+        if (candidat.isEmpty()) return ResponseEntity.status(403).build();
+
+        List<Candidature> result = candidatureRepository.findByCandidatIdWithOffre(candidat.get().getId());
+        return ResponseEntity.ok(result);
     }
 }

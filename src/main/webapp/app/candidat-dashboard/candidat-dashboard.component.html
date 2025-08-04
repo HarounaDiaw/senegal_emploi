@@ -80,6 +80,46 @@
       </form>
     </div>
   </div>
+  <!--Voir Mes candidatures-->
+
+  <div class="mb-4">
+    <button class="btn btn-info" (click)="toggleCandidatures()">
+      {{ showCandidatures ? 'Fermer mes candidatures' : 'Mes candidatures' }}
+    </button>
+  </div>
+
+  <div *ngIf="showCandidatures" class="card mb-4">
+    <div class="card-header bg-info text-white">Mes candidatures</div>
+    <div class="card-body">
+      <div *ngIf="candidatures.length === 0" class="text-muted">Aucune candidature trouvée.</div>
+
+      <div *ngFor="let c of candidatures" class="border rounded p-3 mb-3">
+        <h5>{{ c.offre.titre }}</h5>
+        <p><strong>Description :</strong> {{ c.offre.description }}</p>
+        <p><strong>Date de dépôt :</strong> {{ c.dateDepot | date: 'short' }}</p>
+        <p>
+          <strong>Statut :</strong> <span [ngClass]="getStatutClass(c.statut)">{{ c.statut }}</span>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div
+      class="toast align-items-center text-white bg-success border-0"
+      role="alert"
+      [ngClass]="{ show: showToast }"
+      aria-live="assertive"
+      aria-atomic="true"
+    >
+      <div class="d-flex">
+        <div class="toast-body">
+          {{ toastMessage }}
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" (click)="hideToast()"></button>
+      </div>
+    </div>
+  </div>
 
   <!-- 🧱 4. LISTE DES OFFRES -->
   <div class="card">

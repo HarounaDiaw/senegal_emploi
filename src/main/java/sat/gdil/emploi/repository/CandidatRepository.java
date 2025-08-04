@@ -14,4 +14,6 @@ import sat.gdil.emploi.domain.Candidat;
 public interface CandidatRepository extends JpaRepository<Candidat, Long> {
     @Query("SELECT c FROM Candidat c JOIN FETCH c.user u WHERE u.login = :login")
     Optional<Candidat> findOneWithEagerRelationshipsByLogin(@Param("login") String login);
+
+    Optional<Candidat> findByUserId(Long userId);
 }

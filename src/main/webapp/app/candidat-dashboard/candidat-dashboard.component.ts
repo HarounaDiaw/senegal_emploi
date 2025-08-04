@@ -24,6 +24,10 @@ export class CandidatDashboardComponent implements OnInit {
   cvFile: File | null = null;
   searchQuery = '';
   isEditingProfil = false;
+  showCandidatures = false;
+  candidatures: any[] = [];
+  toastMessage = '';
+  showToast = false;
 
   toggleProfilForm(): void {
     this.isEditingProfil = !this.isEditingProfil;
@@ -116,8 +120,19 @@ export class CandidatDashboardComponent implements OnInit {
   }
 
   postuler(offreId: number): void {
-    // TODO : appeler un endpoint POST /postuler avec offreId
-    alert(`Postulation envoyée pour l'offre ${offreId}`);
+    this.http.post(`/api/candidatures/postuler/${offreId}`, null).subscribe({
+      next: () => {
+        this.showSuccessToast('🎉 Votre candidature a été enregistrée avec succès !');
+      },
+      error: err => {
+        if (err.status === 400) {
+          this.showSuccessToast('⚠️ Vous avez déjà postulé à cette offre.');
+        } else {
+          this.showSuccessToast('❌ Une erreur est survenue lors de la candidature.');
+        }
+        console.error(err);
+      },
+    });
   }
 
   filtrerOffres(): void {
@@ -153,5 +168,44 @@ export class CandidatDashboardComponent implements OnInit {
     const nom = this.profilForm.get('nom')?.value || '';
     const prenom = this.profilForm.get('prenom')?.value || '';
     return (prenom[0] || '') + (nom[0] || '');
+  }
+
+  toggleCandidatures(): void {
+    this.showCandidatures = !this.showCandidatures;
+    if (this.showCandidatures) {
+      this.loadCandidatures();
+    }
+  }
+
+  loadCandidatures(): void {
+    this.http.get<any[]>('/api/candidatures/mes-candidatures').subscribe({
+      next: data => {
+        this.candidatures = data;
+      },
+      error: err => {
+        console.error('Erreur lors du chargement des candidatures :', err);
+      },
+    });
+  }
+
+  getStatutClass(statut: string): string {
+    switch (statut.toLowerCase()) {
+      case 'accepté':
+        return 'text-success fw-bold';
+      case 'rejeté':
+        return 'text-danger fw-bold';
+      default:
+        return 'text-warning fw-bold';
+    }
+  }
+
+  showSuccessToast(message: string): void {
+    this.toastMessage = message;
+    this.showToast = true;
+    setTimeout(() => (this.showToast = false), 4000); // Toast disparaît après 4 sec
+  }
+
+  hideToast(): void {
+    this.showToast = false;
   }
 }
