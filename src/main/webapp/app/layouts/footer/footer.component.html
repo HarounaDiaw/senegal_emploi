@@ -1,3 +1,52 @@
-<div class="footer">
-  <p>Ceci est votre pied de page</p>
-</div>
+<footer class="se-footer">
+  <div class="se-footer-container">
+    <div class="se-footer-section">
+      <h3 class="se-footer-title">Senegal Emploi</h3>
+      <p class="se-footer-text">La plateforme de référence pour l'emploi au Sénégal</p>
+    </div>
+
+    <div class="se-footer-section">
+      <h4 class="se-footer-subtitle">Liens utiles</h4>
+      <ul class="se-footer-links">
+        <li><a routerLink="/">Accueil</a></li>
+        <li><a routerLink="../entities/offre-emploi">Offres d'emploi</a></li>
+        <li><a routerLink="/contact">Contact</a></li>
+        <li><a routerLink="/mentions-legales">Mentions légales</a></li>
+      </ul>
+    </div>
+
+    <div class="se-footer-section">
+      <h4 class="se-footer-subtitle">Nous contacter</h4>
+      <address class="se-footer-contact">
+        <p><fa-icon [icon]="['fas', 'map-marker-alt']"></fa-icon> Dakar, Sénégal</p>
+        <p><fa-icon [icon]="['fas', 'phone']"></fa-icon> +221 33 123 45 67</p>
+        <p><fa-icon [icon]="['fas', 'envelope']"></fa-icon> contact&#64;senegalemploi.sn</p>
+      </address>
+    </div>
+  </div>
+
+  <div class="se-footer-bottom">
+    <p>&copy; {{ currentYear }} Senegal Emploi. Tous droits réservés.</p>
+    <div class="se-footer-social">
+      <a
+        href="https://www.facebook.com/VotrePageSenegalEmploi"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Page Facebook Senegal Emploi"
+      >
+        <fa-icon [icon]="['fab', 'facebook-f']"></fa-icon>
+      </a>
+      <a href="https://twitter.com/SenegalEmploi" target="_blank" rel="noopener noreferrer" aria-label="Compte Twitter Senegal Emploi">
+        <fa-icon [icon]="['fab', 'twitter']"></fa-icon>
+      </a>
+      <a
+        href="https://www.linkedin.com/company/senegal-emploi"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Page LinkedIn Senegal Emploi"
+      >
+        <fa-icon [icon]="['fab', 'linkedin-in']"></fa-icon>
+      </a>
+    </div>
+  </div>
+</footer>

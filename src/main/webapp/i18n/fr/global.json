@@ -1,0 +1,18 @@
+{
+  "global": {
+    "title": "Application",
+    "menu": {
+      "home": "Accueil",
+      "entities": {
+        "main": "Entités",
+        "candidat": "Candidats",
+        "recruteur": "Recruteurs",
+        "offreEmploi": "Offres d'emploi"
+      }
+    },
+    "login": {
+      "username": "Nom d'utilisateur",
+      "password": "Mot de passe"
+    }
+  }
+}
