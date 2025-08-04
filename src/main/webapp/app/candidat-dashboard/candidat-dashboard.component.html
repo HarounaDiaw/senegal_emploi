@@ -1,17 +1,19 @@
 <div class="container mt-4">
-  <!-- 🧱 1. PHOTO DE PROFIL -->
+  <!--  1. PHOTO DE PROFIL -->
   <div class="d-flex align-items-center mb-4">
     <div class="me-4">
       <img *ngIf="photoUrl" [src]="photoUrl" alt="Photo de profil" class="rounded-circle border" width="120" height="120" />
-      <div *ngIf="!photoUrl" class="text-muted">Aucune photo</div>
-    </div>
-    <div>
-      <label class="form-label">Changer de photo</label>
-      <input type="file" (change)="onPhotoSelected($event)" class="form-control" />
+      <div
+        *ngIf="!photoUrl"
+        class="avatar-placeholder rounded-circle d-flex align-items-center justify-content-center text-white bg-secondary"
+        style="width: 120px; height: 120px; font-size: 32px"
+      >
+        {{ getInitiales() }}
+      </div>
     </div>
   </div>
 
-  <!-- 🧱 2. BARRE DE RECHERCHE -->
+  <!--  2. BARRE DE RECHERCHE -->
   <div class="input-group mb-4">
     <input type="text" class="form-control" placeholder="Rechercher une offre..." [(ngModel)]="searchQuery" />
     <button class="btn btn-outline-primary" (click)="filtrerOffres()">Rechercher</button>
@@ -66,12 +68,12 @@
 
         <div class="mb-3">
           <label>Changer la photo</label>
-          <input type="file" accept="image/*" (change)="onPhotoSelected($event)" class="form-control" />
+          <input type="file" accept="image/*" (change)="onFileSelect($event, 'photo')" class="form-control" />
         </div>
 
         <div class="mb-3">
           <label>Ajouter un CV (PDF)</label>
-          <input type="file" accept=".pdf" (change)="onCvSelected($event)" class="form-control" />
+          <input type="file" accept=".pdf" (change)="onFileSelect($event, 'cv')" class="form-control" />
         </div>
 
         <button type="submit" class="btn btn-success">Enregistrer les modifications</button>

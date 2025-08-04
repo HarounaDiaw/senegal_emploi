@@ -1,13 +1,21 @@
 package sat.gdil.emploi.service.impl;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import sat.gdil.emploi.domain.Candidat;
 import sat.gdil.emploi.repository.CandidatRepository;
 import sat.gdil.emploi.security.SecurityUtils;
@@ -122,5 +130,30 @@ public class CandidatServiceImpl implements CandidatService {
 
         candidat = candidatRepository.save(candidat);
         return getCurrentCandidatDTO(); // renvoyer l'état à jour
+    }
+
+    @Override
+    public String storePhoto(MultipartFile file) throws IOException {
+        String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
+
+        // Solution propre : accéder au chemin réel du classpath (target/classes/static)
+        Path root = Paths.get(new ClassPathResource("static/content/images/candidats/photo").getURI());
+
+        Files.createDirectories(root);
+        Files.copy(file.getInputStream(), root.resolve(filename), StandardCopyOption.REPLACE_EXISTING);
+
+        return filename;
+    }
+
+    @Override
+    public String storeCv(MultipartFile file) throws IOException {
+        String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
+
+        Path path = Paths.get("src/main/resources/static/content/images/candidats/cv/" + filename);
+
+        Files.createDirectories(path.getParent());
+        Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+
+        return filename;
     }
 }

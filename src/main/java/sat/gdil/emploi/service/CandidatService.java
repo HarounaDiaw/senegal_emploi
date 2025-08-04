@@ -1,7 +1,9 @@
 package sat.gdil.emploi.service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.web.multipart.MultipartFile;
 import sat.gdil.emploi.service.dto.CandidatDTO;
 
 /**
@@ -55,4 +57,6 @@ public interface CandidatService {
     void delete(Long id);
     CandidatDTO getCurrentCandidatDTO();
     CandidatDTO updateCurrentCandidat(CandidatDTO dto);
+    String storeCv(MultipartFile file) throws IOException;
+    String storePhoto(MultipartFile file) throws IOException;
 }

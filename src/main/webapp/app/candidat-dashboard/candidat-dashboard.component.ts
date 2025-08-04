@@ -7,6 +7,7 @@ import { CandidatService, Candidat } from 'app/entities/candidat/service/candida
 import { AccountService } from 'app/core/auth/account.service';
 
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'jhi-candidat-dashboard',
@@ -16,6 +17,7 @@ import { CommonModule } from '@angular/common';
 })
 export class CandidatDashboardComponent implements OnInit {
   profilForm: FormGroup;
+
   offres: any[] = [];
   candidat: Candidat | null = null;
   photoUrl: string | null = null;
@@ -32,6 +34,7 @@ export class CandidatDashboardComponent implements OnInit {
     private offreService: OffreEmploiService,
     private candidatService: CandidatService,
     private sanitizer: DomSanitizer,
+    private http: HttpClient,
     private accountService: AccountService,
   ) {
     this.profilForm = this.fb.group({
@@ -41,6 +44,8 @@ export class CandidatDashboardComponent implements OnInit {
       telephone: [''],
       adresse: [''],
       sexe: [''],
+      photo: [''],
+      cv: [''],
     });
   }
 
@@ -63,8 +68,10 @@ export class CandidatDashboardComponent implements OnInit {
           telephone: data.telephone,
           adresse: data.adresse,
           sexe: data.sexe,
+          photo: data.photo,
+          cv: data.cv,
         });
-        this.photoUrl = data.user.imageUrl ?? null;
+        this.photoUrl = data.photo ? 'content/images/candidats/photo/' + data.photo : null;
       },
       error: err => {
         console.error('Erreur de chargement du candidat :', err);
@@ -91,6 +98,8 @@ export class CandidatDashboardComponent implements OnInit {
     this.candidatService.updateCurrent(updatedData).subscribe({
       next: res => {
         alert('Profil mis à jour avec succès');
+        this.isEditingProfil = false;
+        this.loadCandidat();
         console.log('Candidat mis à jour :', res);
       },
       error: err => {
@@ -114,5 +123,35 @@ export class CandidatDashboardComponent implements OnInit {
   filtrerOffres(): void {
     // TODO : ajouter la recherche dans le backend si nécessaire
     this.loadOffres();
+  }
+
+  onFileSelect(event: Event, type: 'photo' | 'cv'): void {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const endpoint = type === 'photo' ? '/api/candidats/upload-photo' : '/api/candidats/upload-cv';
+
+    this.http.post(endpoint, formData, { responseType: 'text' }).subscribe({
+      next: (filename: string) => {
+        if (type === 'photo') {
+          this.profilForm.patchValue({ photo: filename });
+          this.photoUrl = 'content/images/candidats/photo/' + filename;
+        } else {
+          this.profilForm.patchValue({ cv: filename });
+        }
+
+        // ✅ Appel immédiat de la mise à jour du profil après upload
+        this.saveProfil();
+      },
+      error: err => console.error('Échec de l’upload', err),
+    });
+  }
+  getInitiales(): string {
+    const nom = this.profilForm.get('nom')?.value || '';
+    const prenom = this.profilForm.get('prenom')?.value || '';
+    return (prenom[0] || '') + (nom[0] || '');
   }
 }

@@ -1,5 +1,6 @@
 package sat.gdil.emploi.web.rest;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -10,12 +11,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import sat.gdil.emploi.domain.Candidat;
 import sat.gdil.emploi.repository.CandidatRepository;
 import sat.gdil.emploi.security.SecurityUtils;
 import sat.gdil.emploi.service.CandidatService;
 import sat.gdil.emploi.service.dto.CandidatDTO;
-import sat.gdil.emploi.service.mapper.CandidatMapper;
 import sat.gdil.emploi.web.rest.errors.BadRequestAlertException;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
@@ -37,12 +38,10 @@ public class CandidatResource {
     private final CandidatService candidatService;
 
     private final CandidatRepository candidatRepository;
-    private final CandidatMapper candidatMapper;
 
-    public CandidatResource(CandidatService candidatService, CandidatRepository candidatRepository, CandidatMapper candidatMapper) {
+    public CandidatResource(CandidatService candidatService, CandidatRepository candidatRepository) {
         this.candidatService = candidatService;
         this.candidatRepository = candidatRepository;
-        this.candidatMapper = candidatMapper;
     }
 
     /**
@@ -181,5 +180,17 @@ public class CandidatResource {
     public ResponseEntity<CandidatDTO> updateCurrentCandidat(@RequestBody CandidatDTO dto) {
         CandidatDTO updated = candidatService.updateCurrentCandidat(dto);
         return ResponseEntity.ok(updated);
+    }
+
+    @PostMapping("/upload-photo")
+    public ResponseEntity<String> uploadPhoto(@RequestParam("file") MultipartFile file) throws IOException {
+        String fileName = candidatService.storePhoto(file);
+        return ResponseEntity.ok().body(fileName);
+    }
+
+    @PostMapping("/upload-cv")
+    public ResponseEntity<String> uploadCv(@RequestParam("file") MultipartFile file) throws IOException {
+        String fileName = candidatService.storeCv(file);
+        return ResponseEntity.ok().body(fileName);
     }
 }
