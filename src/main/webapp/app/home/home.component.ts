@@ -34,6 +34,10 @@ export default class HomeComponent implements OnInit, OnDestroy {
     });
   }
 
+  navigateToOffreEmploi(): void {
+    this.router.navigate(['/offre-emploi']); // Chemin exact selon votre configuration
+  }
+
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
