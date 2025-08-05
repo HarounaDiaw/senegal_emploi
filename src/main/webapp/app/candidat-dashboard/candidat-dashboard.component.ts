@@ -28,6 +28,18 @@ export class CandidatDashboardComponent implements OnInit {
   candidatures: any[] = [];
   toastMessage = '';
   showToast = false;
+  typesContrat: any[] = [];
+  postes: any[] = [];
+  regions: string[] = [];
+
+  filters = {
+    contrat: '',
+    poste: '',
+    region: '',
+    departement: '',
+    minSalaire: null,
+    motCle: '',
+  };
 
   toggleProfilForm(): void {
     this.isEditingProfil = !this.isEditingProfil;
@@ -59,6 +71,10 @@ export class CandidatDashboardComponent implements OnInit {
     this.candidatService.getCurrent().subscribe(candidat => {
       this.profilForm.patchValue(candidat);
     });
+
+    this.loadContrats();
+    this.loadPostes();
+    this.loadRegions();
   }
 
   loadCandidat(): void {
@@ -136,8 +152,17 @@ export class CandidatDashboardComponent implements OnInit {
   }
 
   filtrerOffres(): void {
-    // TODO : ajouter la recherche dans le backend si nécessaire
-    this.loadOffres();
+    const params: any = {};
+    if (this.filters.contrat) params.contrat = this.filters.contrat;
+    if (this.filters.poste) params.poste = this.filters.poste;
+    if (this.filters.region) params.region = this.filters.region;
+    if (this.filters.departement) params.departement = this.filters.departement;
+    if (this.filters.minSalaire) params.minSalaire = this.filters.minSalaire;
+    if (this.filters.motCle) params.motCle = this.filters.motCle;
+    this.http.get<any[]>('/api/offre-emplois/search', { params }).subscribe({
+      next: data => (this.offres = data),
+      error: err => console.error('Erreur de recherche :', err),
+    });
   }
 
   onFileSelect(event: Event, type: 'photo' | 'cv'): void {
@@ -207,5 +232,19 @@ export class CandidatDashboardComponent implements OnInit {
 
   hideToast(): void {
     this.showToast = false;
+  }
+
+  loadContrats(): void {
+    this.http.get<any[]>('/api/type-contrats').subscribe(data => (this.typesContrat = data));
+  }
+
+  loadPostes(): void {
+    this.http.get<any[]>('/api/postes').subscribe(data => (this.postes = data));
+  }
+
+  loadRegions(): void {
+    this.http.get<any[]>('/api/localisations').subscribe(data => {
+      this.regions = [...new Set(data.map(l => l.region))];
+    });
   }
 }

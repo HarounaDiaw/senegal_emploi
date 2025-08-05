@@ -7,11 +7,13 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import sat.gdil.emploi.domain.OffreEmploi;
 import sat.gdil.emploi.repository.OffreEmploiRepository;
 import sat.gdil.emploi.service.OffreEmploiService;
 import sat.gdil.emploi.service.dto.OffreEmploiDTO;
@@ -167,5 +169,40 @@ public class OffreEmploiResource {
         return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<OffreEmploi>> searchOffres(
+        @RequestParam Optional<String> contrat,
+        @RequestParam Optional<String> poste,
+        @RequestParam Optional<String> region,
+        @RequestParam Optional<String> departement,
+        @RequestParam Optional<Double> minSalaire,
+        @RequestParam Optional<String> motCle
+    ) {
+        List<OffreEmploi> results = offreEmploiRepository
+            .findAll()
+            .stream()
+            .filter(o -> contrat.map(c -> o.getTypeContrat() != null && o.getTypeContrat().getLibelle().equalsIgnoreCase(c)).orElse(true))
+            .filter(o -> poste.map(p -> o.getPoste() != null && o.getPoste().getNom().equalsIgnoreCase(p)).orElse(true))
+            .filter(o -> region.map(r -> o.getLocalisation() != null && o.getLocalisation().getRegion().equalsIgnoreCase(r)).orElse(true))
+            .filter(o ->
+                departement.map(d -> o.getLocalisation() != null && o.getLocalisation().getDepartement().equalsIgnoreCase(d)).orElse(true)
+            )
+            .filter(o -> minSalaire.map(s -> o.getRemuneration() != null && o.getRemuneration() >= s).orElse(true))
+            .filter(o ->
+                motCle
+                    .map(k -> {
+                        String lowerK = k.toLowerCase();
+                        return (
+                            (o.getTitre() != null && o.getTitre().toLowerCase().contains(lowerK)) ||
+                            (o.getDescription() != null && o.getDescription().toLowerCase().contains(lowerK))
+                        );
+                    })
+                    .orElse(true)
+            )
+            .collect(Collectors.toList());
+
+        return ResponseEntity.ok(results);
     }
 }

@@ -13,10 +13,42 @@
     </div>
   </div>
 
-  <!--  2. BARRE DE RECHERCHE -->
-  <div class="input-group mb-4">
-    <input type="text" class="form-control" placeholder="Rechercher une offre..." [(ngModel)]="searchQuery" />
-    <button class="btn btn-outline-primary" (click)="filtrerOffres()">Rechercher</button>
+  <div class="card p-4 mb-4 shadow-sm">
+    <h5 class="mb-3">Recherche d'offres</h5>
+    <div class="row g-3">
+      <div class="col-md-4">
+        <label class="form-label">Mot-clé</label>
+        <input type="text" class="form-control" [(ngModel)]="filters.motCle" name="motCle" />
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Type de contrat</label>
+        <select class="form-select" [(ngModel)]="filters.contrat" name="contrat">
+          <option value="">Tous</option>
+          <option *ngFor="let t of typesContrat" [value]="t.libelle">{{ t.libelle }}</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Poste</label>
+        <select class="form-select" [(ngModel)]="filters.poste" name="poste">
+          <option value="">Tous</option>
+          <option *ngFor="let p of postes" [value]="p.nom">{{ p.nom }}</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Région</label>
+        <select class="form-select" [(ngModel)]="filters.region" name="region">
+          <option value="">Toutes</option>
+          <option *ngFor="let r of regions" [value]="r">{{ r }}</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Min. salaire</label>
+        <input type="number" class="form-control" [(ngModel)]="filters.minSalaire" name="salaire" />
+      </div>
+      <div class="col-12 text-end mt-3">
+        <button class="btn btn-primary" (click)="filtrerOffres()">Rechercher</button>
+      </div>
+    </div>
   </div>
 
   <!-- 🧱 3. MODIFIER PROFIL (avec affichage conditionnel) -->
